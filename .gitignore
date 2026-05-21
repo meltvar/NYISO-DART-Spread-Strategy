@@ -1,0 +1,33 @@
+# Data artifacts (regenerable from gridstatus)
+data/raw/
+data/processed/
+data/features/
+
+# Model checkpoints (regenerable from training)
+models/checkpoints/
+
+# Results (regenerable from backtest)
+results/figures/
+results/cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+.env
+.python-version
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,3 @@
+variant,total_pnl,n_trades,eligible_pairs_traded,pos_pnl,neg_pnl,pct_vs_safe,leak_inflation_x
+safe,46623.18,6171,18,21995.059999999998,24628.12,1.0,
+naive,140303.0,9244,13,119010.20000000001,21292.8,3.009297092133141,3.009297092133141

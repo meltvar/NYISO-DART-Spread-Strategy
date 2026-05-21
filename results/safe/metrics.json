@@ -1,0 +1,106 @@
+{
+  "variant": "safe",
+  "test_rows": 35064,
+  "n_trades": 6171,
+  "total_pnl": 46623.18,
+  "pos_pnl": 21995.059999999998,
+  "neg_pnl": 24628.12,
+  "by_year": {
+    "2022": 5448.11,
+    "2023": 7565.24,
+    "2024": 10565.789999999999,
+    "2025": 23044.04
+  },
+  "by_zone_side": [
+    {
+      "zone": "CAPITL",
+      "side": "neg",
+      "payoff": -661.1300000000001
+    },
+    {
+      "zone": "CAPITL",
+      "side": "pos",
+      "payoff": 7983.139999999999
+    },
+    {
+      "zone": "CENTRL",
+      "side": "neg",
+      "payoff": -894.3900000000001
+    },
+    {
+      "zone": "CENTRL",
+      "side": "pos",
+      "payoff": 1626.69
+    },
+    {
+      "zone": "DUNWOD",
+      "side": "neg",
+      "payoff": 1563.83
+    },
+    {
+      "zone": "DUNWOD",
+      "side": "pos",
+      "payoff": 1168.52
+    },
+    {
+      "zone": "GENESE",
+      "side": "pos",
+      "payoff": 1640.3899999999999
+    },
+    {
+      "zone": "HUDVL",
+      "side": "neg",
+      "payoff": 1280.3799999999997
+    },
+    {
+      "zone": "HUDVL",
+      "side": "pos",
+      "payoff": 215.23000000000056
+    },
+    {
+      "zone": "LONGIL",
+      "side": "neg",
+      "payoff": 15035.42
+    },
+    {
+      "zone": "LONGIL",
+      "side": "pos",
+      "payoff": 950.79
+    },
+    {
+      "zone": "MHKVL",
+      "side": "pos",
+      "payoff": 2367.2500000000005
+    },
+    {
+      "zone": "MILLWD",
+      "side": "neg",
+      "payoff": 1459.51
+    },
+    {
+      "zone": "MILLWD",
+      "side": "pos",
+      "payoff": 937.0600000000001
+    },
+    {
+      "zone": "NORTH",
+      "side": "pos",
+      "payoff": 2827.89
+    },
+    {
+      "zone": "NYC",
+      "side": "neg",
+      "payoff": 6844.5
+    },
+    {
+      "zone": "NYC",
+      "side": "pos",
+      "payoff": 974.1
+    },
+    {
+      "zone": "WEST",
+      "side": "pos",
+      "payoff": 1303.9999999999998
+    }
+  ]
+}

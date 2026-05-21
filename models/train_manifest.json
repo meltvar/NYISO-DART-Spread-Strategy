@@ -1,0 +1,244 @@
+{
+  "safe": {
+    "variant": "safe",
+    "n_models": 22,
+    "rows": {
+      "train": 43104,
+      "val": 17544,
+      "test": 35064
+    },
+    "fit_stats": {
+      "CAPITL_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 15039,
+        "pos_rate_train": 0.35492778249787593
+      },
+      "CAPITL_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 1591,
+        "pos_rate_train": 0.03754838100632493
+      },
+      "CENTRL_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 13232,
+        "pos_rate_train": 0.31228169545926554
+      },
+      "CENTRL_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 1286,
+        "pos_rate_train": 0.030350231284810725
+      },
+      "DUNWOD_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 15261,
+        "pos_rate_train": 0.3601670914755027
+      },
+      "DUNWOD_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 1430,
+        "pos_rate_train": 0.03374870197300104
+      },
+      "GENESE_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 12957,
+        "pos_rate_train": 0.30579156046445766
+      },
+      "GENESE_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 1216,
+        "pos_rate_train": 0.028698196922495988
+      },
+      "HUDVL_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 14874,
+        "pos_rate_train": 0.3510337015009912
+      },
+      "HUDVL_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 1411,
+        "pos_rate_train": 0.03330029264608704
+      },
+      "LONGIL_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 19439,
+        "pos_rate_train": 0.45876994241480223
+      },
+      "LONGIL_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 2443,
+        "pos_rate_train": 0.05765599924478429
+      },
+      "MHKVL_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 13003,
+        "pos_rate_train": 0.30687718304540734
+      },
+      "MHKVL_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 1281,
+        "pos_rate_train": 0.03023222883035967
+      },
+      "MILLWD_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 15143,
+        "pos_rate_train": 0.35738223355045784
+      },
+      "MILLWD_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 1421,
+        "pos_rate_train": 0.033536297554989145
+      },
+      "NORTH_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 11329,
+        "pos_rate_train": 0.2673699612951949
+      },
+      "NORTH_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 1347,
+        "pos_rate_train": 0.031789861229113564
+      },
+      "NYC_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 15603,
+        "pos_rate_train": 0.3682384593599547
+      },
+      "NYC_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 1695,
+        "pos_rate_train": 0.040002832058906826
+      },
+      "WEST_pos": {
+        "n_train_rows": 42372,
+        "n_train_pos": 15678,
+        "pos_rate_train": 0.3700084961767205
+      },
+      "WEST_neg": {
+        "n_train_rows": 42372,
+        "n_train_pos": 2028,
+        "pos_rate_train": 0.047861795525346924
+      }
+    }
+  },
+  "naive": {
+    "variant": "naive",
+    "n_models": 22,
+    "rows": {
+      "train": 43104,
+      "val": 17544,
+      "test": 35064
+    },
+    "fit_stats": {
+      "CAPITL_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 15056,
+        "pos_rate_train": 0.35499386965953034
+      },
+      "CAPITL_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 1592,
+        "pos_rate_train": 0.03753654626049231
+      },
+      "CENTRL_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 13246,
+        "pos_rate_train": 0.31231726869753845
+      },
+      "CENTRL_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 1287,
+        "pos_rate_train": 0.030345185324908045
+      },
+      "DUNWOD_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 15274,
+        "pos_rate_train": 0.3601339243610299
+      },
+      "DUNWOD_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 1431,
+        "pos_rate_train": 0.033740450815806844
+      },
+      "GENESE_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 12970,
+        "pos_rate_train": 0.3058096765066491
+      },
+      "GENESE_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 1217,
+        "pos_rate_train": 0.028694709044610016
+      },
+      "HUDVL_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 14888,
+        "pos_rate_train": 0.35103272658681506
+      },
+      "HUDVL_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 1412,
+        "pos_rate_train": 0.03329246439686881
+      },
+      "LONGIL_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 19458,
+        "pos_rate_train": 0.45878524945770066
+      },
+      "LONGIL_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 2444,
+        "pos_rate_train": 0.057625200414976895
+      },
+      "MHKVL_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 13017,
+        "pos_rate_train": 0.30691785343770633
+      },
+      "MHKVL_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 1282,
+        "pos_rate_train": 0.030227294162029614
+      },
+      "MILLWD_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 15156,
+        "pos_rate_train": 0.35735169291709895
+      },
+      "MILLWD_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 1422,
+        "pos_rate_train": 0.03352824672262567
+      },
+      "NORTH_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 11342,
+        "pos_rate_train": 0.2674243138734321
+      },
+      "NORTH_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 1348,
+        "pos_rate_train": 0.031783457512024896
+      },
+      "NYC_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 15619,
+        "pos_rate_train": 0.3682684145996416
+      },
+      "NYC_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 1696,
+        "pos_rate_train": 0.03998868244836367
+      },
+      "WEST_pos": {
+        "n_train_rows": 42412,
+        "n_train_pos": 15691,
+        "pos_rate_train": 0.36996604734509103
+      },
+      "WEST_neg": {
+        "n_train_rows": 42412,
+        "n_train_pos": 2029,
+        "pos_rate_train": 0.047840233896067154
+      }
+    }
+  }
+}
