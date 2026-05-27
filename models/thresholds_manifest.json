@@ -4,176 +4,16 @@
       "zone": "CAPITL",
       "side": "pos",
       "best_tau": 0.5,
-      "val_pnl": 1525.88,
-      "val_trades": 705,
-      "val_avg": 2.1643687943262413,
+      "val_pnl": 974.9000000000001,
+      "val_trades": 756,
+      "val_avg": 1.2895502645502648,
       "eligible": true,
       "reason": "ok"
     },
     {
       "zone": "CAPITL",
       "side": "neg",
-      "best_tau": 0.58,
-      "val_pnl": 25.909999999999997,
-      "val_trades": 2,
-      "val_avg": 12.954999999999998,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "CENTRL",
-      "side": "pos",
-      "best_tau": 0.5,
-      "val_pnl": 845.8100000000002,
-      "val_trades": 355,
-      "val_avg": 2.382563380281691,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "CENTRL",
-      "side": "neg",
-      "best_tau": 0.54,
-      "val_pnl": 99.13,
-      "val_trades": 4,
-      "val_avg": 24.7825,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "DUNWOD",
-      "side": "pos",
-      "best_tau": 0.86,
-      "val_pnl": 119.94,
-      "val_trades": 16,
-      "val_avg": 7.49625,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "DUNWOD",
-      "side": "neg",
-      "best_tau": 0.54,
-      "val_pnl": 144.66000000000003,
-      "val_trades": 2,
-      "val_avg": 72.33000000000001,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "GENESE",
-      "side": "pos",
-      "best_tau": 0.52,
-      "val_pnl": 483.47,
-      "val_trades": 202,
-      "val_avg": 2.3934158415841584,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "GENESE",
-      "side": "neg",
-      "best_tau": 0.79,
-      "val_pnl": 0.0,
-      "val_trades": 0,
-      "val_avg": 0.0,
-      "eligible": false,
-      "reason": "no trades"
-    },
-    {
-      "zone": "HUDVL",
-      "side": "pos",
-      "best_tau": 0.5,
-      "val_pnl": 662.4000000000001,
-      "val_trades": 456,
-      "val_avg": 1.4526315789473687,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "HUDVL",
-      "side": "neg",
-      "best_tau": 0.5,
-      "val_pnl": 131.59,
-      "val_trades": 4,
-      "val_avg": 32.8975,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "LONGIL",
-      "side": "pos",
-      "best_tau": 0.9,
-      "val_pnl": 66.25999999999999,
-      "val_trades": 10,
-      "val_avg": 6.6259999999999994,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "LONGIL",
-      "side": "neg",
-      "best_tau": 0.54,
-      "val_pnl": 1579.5099999999998,
-      "val_trades": 10,
-      "val_avg": 157.95099999999996,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "MHKVL",
-      "side": "pos",
-      "best_tau": 0.5,
-      "val_pnl": 749.8600000000001,
-      "val_trades": 344,
-      "val_avg": 2.1798255813953493,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "MHKVL",
-      "side": "neg",
-      "best_tau": 0.89,
-      "val_pnl": 0.0,
-      "val_trades": 0,
-      "val_avg": 0.0,
-      "eligible": false,
-      "reason": "no trades"
-    },
-    {
-      "zone": "MILLWD",
-      "side": "pos",
       "best_tau": 0.91,
-      "val_pnl": 80.19,
-      "val_trades": 6,
-      "val_avg": 13.365,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "MILLWD",
-      "side": "neg",
-      "best_tau": 0.52,
-      "val_pnl": 131.17000000000002,
-      "val_trades": 4,
-      "val_avg": 32.792500000000004,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "NORTH",
-      "side": "pos",
-      "best_tau": 0.61,
-      "val_pnl": 117.98999999999998,
-      "val_trades": 25,
-      "val_avg": 4.719599999999999,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "NORTH",
-      "side": "neg",
-      "best_tau": 0.94,
       "val_pnl": 0.0,
       "val_trades": 0,
       "val_avg": 0.0,
@@ -181,74 +21,12 @@
       "reason": "no trades"
     },
     {
-      "zone": "NYC",
-      "side": "pos",
-      "best_tau": 0.87,
-      "val_pnl": 47.309999999999995,
-      "val_trades": 6,
-      "val_avg": 7.884999999999999,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "NYC",
-      "side": "neg",
-      "best_tau": 0.5,
-      "val_pnl": 945.37,
-      "val_trades": 4,
-      "val_avg": 236.3425,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "WEST",
+      "zone": "CENTRL",
       "side": "pos",
       "best_tau": 0.51,
-      "val_pnl": 3870.88,
-      "val_trades": 808,
-      "val_avg": 4.790693069306931,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "WEST",
-      "side": "neg",
-      "best_tau": 0.95,
-      "val_pnl": 0.0,
-      "val_trades": 0,
-      "val_avg": 0.0,
-      "eligible": false,
-      "reason": "no trades"
-    }
-  ],
-  "naive": [
-    {
-      "zone": "CAPITL",
-      "side": "pos",
-      "best_tau": 0.5,
-      "val_pnl": 4475.150000000001,
-      "val_trades": 904,
-      "val_avg": 4.950387168141593,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "CAPITL",
-      "side": "neg",
-      "best_tau": 0.82,
-      "val_pnl": 37.95,
-      "val_trades": 1,
-      "val_avg": 37.95,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "CENTRL",
-      "side": "pos",
-      "best_tau": 0.5,
-      "val_pnl": 1857.51,
-      "val_trades": 428,
-      "val_avg": 4.339976635514018,
+      "val_pnl": 1048.9,
+      "val_trades": 419,
+      "val_avg": 2.5033412887828166,
       "eligible": true,
       "reason": "ok"
     },
@@ -265,135 +43,35 @@
     {
       "zone": "DUNWOD",
       "side": "pos",
-      "best_tau": 0.56,
-      "val_pnl": 729.84,
-      "val_trades": 332,
-      "val_avg": 2.1983132530120484,
+      "best_tau": 0.87,
+      "val_pnl": 91.47999999999999,
+      "val_trades": 13,
+      "val_avg": 7.036923076923076,
       "eligible": true,
       "reason": "ok"
     },
     {
       "zone": "DUNWOD",
       "side": "neg",
-      "best_tau": 0.96,
-      "val_pnl": 0.0,
-      "val_trades": 0,
-      "val_avg": 0.0,
-      "eligible": false,
-      "reason": "no trades"
-    },
-    {
-      "zone": "GENESE",
-      "side": "pos",
       "best_tau": 0.5,
-      "val_pnl": 1280.54,
-      "val_trades": 357,
-      "val_avg": 3.5869467787114844,
+      "val_pnl": 145.28000000000003,
+      "val_trades": 4,
+      "val_avg": 36.32000000000001,
       "eligible": true,
       "reason": "ok"
     },
     {
       "zone": "GENESE",
-      "side": "neg",
-      "best_tau": 0.82,
-      "val_pnl": 0.0,
-      "val_trades": 0,
-      "val_avg": 0.0,
-      "eligible": false,
-      "reason": "no trades"
-    },
-    {
-      "zone": "HUDVL",
       "side": "pos",
-      "best_tau": 0.5,
-      "val_pnl": 2074.1299999999997,
-      "val_trades": 629,
-      "val_avg": 3.2975039745627974,
+      "best_tau": 0.57,
+      "val_pnl": 562.75,
+      "val_trades": 177,
+      "val_avg": 3.1793785310734464,
       "eligible": true,
       "reason": "ok"
     },
     {
-      "zone": "HUDVL",
-      "side": "neg",
-      "best_tau": 0.94,
-      "val_pnl": 0.0,
-      "val_trades": 0,
-      "val_avg": 0.0,
-      "eligible": false,
-      "reason": "no trades"
-    },
-    {
-      "zone": "LONGIL",
-      "side": "pos",
-      "best_tau": 0.84,
-      "val_pnl": 1090.4499999999998,
-      "val_trades": 43,
-      "val_avg": 25.359302325581393,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "LONGIL",
-      "side": "neg",
-      "best_tau": 0.56,
-      "val_pnl": 1851.05,
-      "val_trades": 22,
-      "val_avg": 84.13863636363637,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "MHKVL",
-      "side": "pos",
-      "best_tau": 0.5,
-      "val_pnl": 1642.3900000000003,
-      "val_trades": 407,
-      "val_avg": 4.035356265356266,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "MHKVL",
-      "side": "neg",
-      "best_tau": 0.97,
-      "val_pnl": 0.0,
-      "val_trades": 0,
-      "val_avg": 0.0,
-      "eligible": false,
-      "reason": "no trades"
-    },
-    {
-      "zone": "MILLWD",
-      "side": "pos",
-      "best_tau": 0.82,
-      "val_pnl": 219.37,
-      "val_trades": 26,
-      "val_avg": 8.437307692307693,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "MILLWD",
-      "side": "neg",
-      "best_tau": 0.89,
-      "val_pnl": 0.0,
-      "val_trades": 0,
-      "val_avg": 0.0,
-      "eligible": false,
-      "reason": "no trades"
-    },
-    {
-      "zone": "NORTH",
-      "side": "pos",
-      "best_tau": 0.7,
-      "val_pnl": 99.76000000000002,
-      "val_trades": 13,
-      "val_avg": 7.6738461538461555,
-      "eligible": true,
-      "reason": "ok"
-    },
-    {
-      "zone": "NORTH",
+      "zone": "GENESE",
       "side": "neg",
       "best_tau": 0.9,
       "val_pnl": 0.0,
@@ -403,19 +81,119 @@
       "reason": "no trades"
     },
     {
+      "zone": "HUDVL",
+      "side": "pos",
+      "best_tau": 0.85,
+      "val_pnl": 18.639999999999997,
+      "val_trades": 9,
+      "val_avg": 2.0711111111111107,
+      "eligible": true,
+      "reason": "ok"
+    },
+    {
+      "zone": "HUDVL",
+      "side": "neg",
+      "best_tau": 0.5,
+      "val_pnl": 118.82999999999998,
+      "val_trades": 3,
+      "val_avg": 39.60999999999999,
+      "eligible": true,
+      "reason": "ok"
+    },
+    {
+      "zone": "LONGIL",
+      "side": "pos",
+      "best_tau": 0.95,
+      "val_pnl": 33.199999999999996,
+      "val_trades": 4,
+      "val_avg": 8.299999999999999,
+      "eligible": true,
+      "reason": "ok"
+    },
+    {
+      "zone": "LONGIL",
+      "side": "neg",
+      "best_tau": 0.58,
+      "val_pnl": 1573.35,
+      "val_trades": 6,
+      "val_avg": 262.22499999999997,
+      "eligible": true,
+      "reason": "ok"
+    },
+    {
+      "zone": "MHKVL",
+      "side": "pos",
+      "best_tau": 0.51,
+      "val_pnl": 1180.73,
+      "val_trades": 395,
+      "val_avg": 2.9891898734177214,
+      "eligible": true,
+      "reason": "ok"
+    },
+    {
+      "zone": "MHKVL",
+      "side": "neg",
+      "best_tau": 0.94,
+      "val_pnl": 0.0,
+      "val_trades": 0,
+      "val_avg": 0.0,
+      "eligible": false,
+      "reason": "no trades"
+    },
+    {
+      "zone": "MILLWD",
+      "side": "pos",
+      "best_tau": 0.9,
+      "val_pnl": 44.54,
+      "val_trades": 4,
+      "val_avg": 11.135,
+      "eligible": true,
+      "reason": "ok"
+    },
+    {
+      "zone": "MILLWD",
+      "side": "neg",
+      "best_tau": 0.5,
+      "val_pnl": 118.22000000000001,
+      "val_trades": 3,
+      "val_avg": 39.40666666666667,
+      "eligible": true,
+      "reason": "ok"
+    },
+    {
+      "zone": "NORTH",
+      "side": "pos",
+      "best_tau": 0.54,
+      "val_pnl": 544.24,
+      "val_trades": 135,
+      "val_avg": 4.031407407407407,
+      "eligible": true,
+      "reason": "ok"
+    },
+    {
+      "zone": "NORTH",
+      "side": "neg",
+      "best_tau": 0.94,
+      "val_pnl": 0.0,
+      "val_trades": 0,
+      "val_avg": 0.0,
+      "eligible": false,
+      "reason": "no trades"
+    },
+    {
       "zone": "NYC",
       "side": "pos",
-      "best_tau": 0.75,
-      "val_pnl": 156.23,
-      "val_trades": 40,
-      "val_avg": 3.90575,
+      "best_tau": 0.88,
+      "val_pnl": 34.83,
+      "val_trades": 4,
+      "val_avg": 8.7075,
       "eligible": true,
       "reason": "ok"
     },
     {
       "zone": "NYC",
       "side": "neg",
-      "best_tau": 0.77,
+      "best_tau": 0.93,
       "val_pnl": 0.0,
       "val_trades": 0,
       "val_avg": 0.0,
@@ -425,10 +203,10 @@
     {
       "zone": "WEST",
       "side": "pos",
-      "best_tau": 0.52,
-      "val_pnl": 4887.91,
-      "val_trades": 853,
-      "val_avg": 5.730257913247362,
+      "best_tau": 0.51,
+      "val_pnl": 2410.4100000000003,
+      "val_trades": 878,
+      "val_avg": 2.745341685649203,
       "eligible": true,
       "reason": "ok"
     },

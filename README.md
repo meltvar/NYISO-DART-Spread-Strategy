@@ -50,26 +50,31 @@ P&L are excluded from trading in the test period.
 
 ```
 nyiso-dart-strategy/
-├── nyiso_dart/
-│   ├── config.py              constants, paths, splits, helpers
+├── nyiso_dart/                    Core Python package (pipeline)
+│   ├── config.py                  constants, paths, splits, helpers
 │   ├── data/
-│   │   ├── download.py        fetch raw NYISO data via gridstatus
-│   │   ├── validate.py        completeness and integrity checks
-│   │   └── build.py           merge raw data into the canonical hourly panel
+│   │   ├── download.py            fetch raw NYISO data via gridstatus
+│   │   ├── validate.py            completeness and integrity checks
+│   │   └── build.py               merge raw data into the canonical hourly panel
 │   ├── features/
-│   │   └── build.py           50-feature matrix + 22 labels per hour
+│   │   └── build.py               50-feature matrix + 22 labels per hour
 │   ├── models/
-│   │   ├── splits.py          train/val/test calendar masks
-│   │   ├── train.py           fit the 22 logistic regressions
-│   │   └── thresholds.py      validation-set τ tuning + eligibility
+│   │   ├── splits.py              train/val/test calendar masks
+│   │   ├── train.py               fit the 22 logistic regressions
+│   │   └── thresholds.py          validation-set τ tuning + eligibility
 │   └── backtest/
-│       ├── run.py             apply locked policy to test period
-│       └── report.py          tables, plots, safe-vs-naive comparison
+│       ├── run.py                 apply locked policy to test period
+│       └── report.py              tables, plots, safe-vs-naive comparison
+├── dashboard/                     Streamlit dashboard (interactive)
+│   ├── App.py                     Overview / headline KPIs
+│   ├── pages/                     Performance, 2026 Live, Sandbox, Methodology, How It Works
+│   └── lib/                       data loaders, plot helpers, metric calculations
 ├── notebooks/
-│   ├── model_validation.ipynb       full pipeline walkthrough
-│   ├── live_2026_test.ipynb         out-of-sample 2026 test
-│   ├── backtest_custom_range.ipynb  user-specified date-range backtest
-│   └── sandbox.ipynb                interactive prediction sandbox
+│   ├── model_validation.ipynb     full pipeline walkthrough
+│   ├── live_2026_test.ipynb       out-of-sample 2026 test
+│   ├── backtest_custom_range.ipynb date-range backtest
+│   └── sandbox.ipynb              interactive prediction sandbox
+├── scripts/                       exploratory one-off scripts (not part of pipeline)
 ├── data/        (gitignored — regenerable from gridstatus)
 ├── models/      (gitignored — regenerable by training)
 ├── results/     (gitignored — regenerable by backtest)
@@ -103,6 +108,27 @@ python -m nyiso_dart.backtest.report
 
 End-to-end takes about 10 minutes on a modern laptop. Results land in
 `results/naive/`.
+
+## Interactive dashboard
+
+A Streamlit dashboard sits on top of the pipeline for interactive exploration and pitch presentations:
+
+```bash
+streamlit run dashboard/App.py
+```
+
+Opens in the browser with five pages:
+
+- **Overview** — headline KPIs (P&L, Sharpe, win rate), cumulative equity curve, DEC vs INC split, full zone attribution
+- **📊 Performance** — yearly P&L, monthly heatmap, precision/recall scatter, trade payoff distribution
+- **🔮 2026 Live Test** — true out-of-sample on post-deployment data, year-over-year comparison, January cold-snap deep dive
+- **🎯 Sandbox** — pick any date range from 2015 to 2026-05-15, full statistics computed on demand
+- **🔬 Methodology** — bias prevention discipline, audit results, what is and isn't in the backtest
+- **📚 How It Works** — DART/INC/DEC explainer, the 11 zones, end-to-end trade timeline
+
+The dashboard reads pre-computed artifacts from `data/`, `models/`, and `results/`, so the full
+pipeline above must be run once before launching. Page navigation is near-instant thanks to
+`@st.cache_data`.
 
 ## Bias-prevention design
 

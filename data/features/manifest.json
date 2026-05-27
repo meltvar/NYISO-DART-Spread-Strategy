@@ -1,0 +1,17 @@
+{
+  "panel_path": "C:\\Users\\Melvin Varghese\\nyiso-dart-strategy\\data\\processed\\panel.parquet",
+  "rows": 95712,
+  "feature_cols": 52,
+  "label_cols": 22,
+  "gamma_pos": 5.0,
+  "gamma_neg": 30.0,
+  "audit_safe": {
+    "safe_lag_leaks": 0,
+    "safe_lag_nan_rows": 22
+  },
+  "audit_naive": {
+    "naive_lag_leak_hours": 0,
+    "naive_leak_fraction": 0.0,
+    "naive_lag_nan_rows": 22
+  }
+}

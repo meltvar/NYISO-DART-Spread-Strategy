@@ -1,23 +1,37 @@
 """
-Build the 50-dimensional feature matrix and the 22 binary label series
+Build the 52-dimensional feature matrix and the 22 binary label series
 from data/processed/panel.parquet.
 
-The feature vector for each hour t is global across zones:
-    4 zone-level predictors  x  11 zones  +  6 calendar features  =  50
-The four zone-level predictors are:
-    - day-ahead load forecast (this hour)
-    - lagged DART at 24h
-    - lagged DART at 48h
-    - lagged load forecast error at 24h
+The feature vector for each hour t on day D:
+    4 zone-level predictors  x  11 zones  =  44 features
+    6 calendar features                   =   6 features
+    2 past-spike-cluster scalars          =   2 features
+                                         ─────────────
+    Total                                =  52 features
 
-We produce two feature matrices side-by-side:
-    X_safe   uses point-in-time-safe lags (no look-ahead under any reading)
-    X_naive  uses literal t-24h / t-48h lags (standard time-series convention,
-             but contains a subtle leak for late-hour operating rows because
-             the source value is not yet settled at gate closure)
+Zone-level predictors (all sourced from D-2 or D-3, unconditionally settled):
+    - day-ahead load forecast (this hour, published before gate closure)
+    - lagged DART at 48h  (D-2 same clock-hour)
+    - lagged DART at 72h  (D-3 same clock-hour)
+    - lagged load forecast error at 48h  (D-2 same clock-hour)
 
-Both are saved. Training and backtest can run on either matrix so the impact
-of the literal-lag leak on backtest P&L can be measured empirically.
+Past-spike-cluster scalars (sourced from the full operating day D-2):
+    - past_pos_spikes_d2  count of (zone, hour) pairs on D-2 with DART >= +5
+    - past_neg_spikes_d2  count of (zone, hour) pairs on D-2 with DART <= -30
+
+Gate-closure invariant
+----------------------
+The NYISO DAM for operating day D closes at 05:00 ET on day D-1.
+D-2 same-hour DART settles at ~(hour+1):00 on D-2, which is at least
+5 hours before gate closure (the latest D-2 hour settles ~00:00 D-1,
+still 5h before gate). D-3 is even older. The past-spike scalars are
+aggregated over all 24 hours of D-2 — the latest of those also settles
+~00:00 D-1. All features are unconditionally leak-free for every hour
+0-23 and across DST boundaries.
+
+Both X_safe and X_naive are written as identical matrices (the safe/naive
+distinction is vacuous with D-2/D-3 lags — both files kept so the rest
+of the pipeline works without modification).
 
 Labels:
     y_{z,pos}[t] = 1 if DART[t,z] >= +5  $/MWh   (DEC signal)
@@ -25,19 +39,10 @@ Labels:
 
 Outputs
 -------
-data/features/X_safe.parquet     index=interval_start_local,  50 columns
-data/features/X_naive.parquet    same shape, naive lags
+data/features/X_safe.parquet     index=interval_start_local,  52 columns
+data/features/X_naive.parquet    identical to X_safe
 data/features/y.parquet          index=interval_start_local,  22 columns
 data/features/manifest.json      audit results, label thresholds, row counts
-
-Bias-prevention assertions
---------------------------
-Before save, we verify for the SAFE matrix that every (zone, lag) feature
-came from a panel row whose realized-by time is strictly earlier than
-gate_closure(target_hour). Violation -> RuntimeError.
-
-The naive matrix is *expected* to contain late-hour leaks; we count them
-and write the count into manifest.json so the audit is explicit.
 """
 from __future__ import annotations
 
@@ -216,6 +221,45 @@ def _build_labels(dart_wide: pd.DataFrame) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------------------
+# Past-spike-cluster features
+# ---------------------------------------------------------------------------
+def _past_spikes_d2(dart_w: pd.DataFrame) -> pd.DataFrame:
+    """For each operating hour t on day D, count spike events on D-2.
+
+    past_pos_spikes_d2: number of (zone, hour) pairs on D-2 with DART >= +5
+    past_neg_spikes_d2: number of (zone, hour) pairs on D-2 with DART <= -30
+
+    Uses datetime.date arithmetic to avoid DST wall-clock ambiguities — two
+    calendar days back is unambiguous at the date level. D-2's last hour
+    settles ~00:00 D-1, 5 hours before gate closure. Zero look-ahead.
+    """
+    from datetime import timedelta
+
+    # Per-hour spike indicator summed across all 11 zones -> scalar per hour
+    pos_by_hour = (dart_w >= GAMMA_POS).sum(axis=1)
+    neg_by_hour = (dart_w <= -GAMMA_NEG).sum(axis=1)
+
+    # Aggregate to per-operating-date using date objects (DST-safe)
+    dates = pd.Series([ts.date() for ts in dart_w.index], index=dart_w.index)
+    daily_pos = pos_by_hour.groupby(dates).sum()   # index: datetime.date
+    daily_neg = neg_by_hour.groupby(dates).sum()
+
+    # Look up D-2 date for each row (calendar subtraction, no DST ambiguity)
+    d2_dates = pd.Series(
+        [d - timedelta(days=2) for d in dates],
+        index=dart_w.index,
+    )
+    past_pos = daily_pos.reindex(d2_dates.values).values
+    past_neg = daily_neg.reindex(d2_dates.values).values
+
+    return pd.DataFrame(
+        {"past_pos_spikes_d2": past_pos.astype(float),
+         "past_neg_spikes_d2": past_neg.astype(float)},
+        index=dart_w.index,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Feature-matrix assembly
 # ---------------------------------------------------------------------------
 def build_features(panel: pd.DataFrame) -> dict[str, pd.DataFrame]:
@@ -227,36 +271,37 @@ def build_features(panel: pd.DataFrame) -> dict[str, pd.DataFrame]:
 
     t_series = pd.Series(dart_w.index, index=dart_w.index)
 
-    log.info("Computing point-in-time-safe lag targets...")
-    safe_t_lag24 = _safe_lag_targets(t_series, 1)
-    safe_t_lag48 = _safe_lag_targets(t_series, 2)
-    log.info("Computing naive (literal) lag targets...")
-    naive_t_lag24 = _naive_lag_targets(t_series, 1)
-    naive_t_lag48 = _naive_lag_targets(t_series, 2)
+    # D-2 and D-3 same clock-hour: unconditionally settled before gate closure
+    # for every hour of day (0-23) and across DST boundaries.
+    log.info("Computing unconditionally-safe lag targets (D-2, D-3)...")
+    t_lag48 = _naive_lag_targets(t_series, 2)   # D-2 same clock-hour
+    t_lag72 = _naive_lag_targets(t_series, 3)   # D-3 same clock-hour
 
-    def _build_X(t_lag24: pd.Series, t_lag48: pd.Series) -> pd.DataFrame:
-        log.info("  applying lags to DART...")
-        dart_l24 = _apply_lag(dart_w, t_lag24).add_suffix("_dart_lag24")
+    def _build_X() -> pd.DataFrame:
+        log.info("  applying 48h lag to DART...")
         dart_l48 = _apply_lag(dart_w, t_lag48).add_suffix("_dart_lag48")
-        log.info("  applying lag to load forecast error...")
-        lfe_l24 = _apply_lag(lfe_w, t_lag24).add_suffix("_lfe_lag24")
+        log.info("  applying 72h lag to DART...")
+        dart_l72 = _apply_lag(dart_w, t_lag72).add_suffix("_dart_lag72")
+        log.info("  applying 48h lag to load forecast error...")
+        lfe_l48 = _apply_lag(lfe_w, t_lag48).add_suffix("_lfe_lag48")
         log.info("  collecting current DA load forecast (no lag)...")
         da_lf = da_lf_w.add_suffix("_da_load_forecast")
         log.info("  computing calendar features...")
         cal = _calendar_features(dart_w.index)
-        X = pd.concat([da_lf, dart_l24, dart_l48, lfe_l24, cal], axis=1)
-        # Stable column order: zone-block-then-feature, then calendar.
+        log.info("  computing past-spike-cluster features (D-2, leak-free)...")
+        spk = _past_spikes_d2(dart_w)
+        X = pd.concat([da_lf, dart_l48, dart_l72, lfe_l48, cal, spk], axis=1)
         block_cols = []
-        for feat in ("da_load_forecast", "dart_lag24", "dart_lag48", "lfe_lag24"):
+        for feat in ("da_load_forecast", "dart_lag48", "dart_lag72", "lfe_lag48"):
             for z in ZONES:
                 block_cols.append(f"{z}_{feat}")
         cal_cols = list(cal.columns)
-        return X[block_cols + cal_cols]
+        spk_cols = list(spk.columns)   # past_pos_spikes_d2, past_neg_spikes_d2
+        return X[block_cols + cal_cols + spk_cols]
 
-    log.info("Assembling X_safe...")
-    X_safe = _build_X(safe_t_lag24, safe_t_lag48)
-    log.info("Assembling X_naive...")
-    X_naive = _build_X(naive_t_lag24, naive_t_lag48)
+    log.info("Assembling feature matrix (safe = naive, both use D-2/D-3 lags)...")
+    X_safe = _build_X()
+    X_naive = X_safe  # identical — safe/naive distinction is vacuous with D-2/D-3 lags
 
     log.info("Building labels...")
     y = _build_labels(dart_w)
@@ -268,41 +313,32 @@ def build_features(panel: pd.DataFrame) -> dict[str, pd.DataFrame]:
 # Bias-prevention audit
 # ---------------------------------------------------------------------------
 def _audit_safe(X_safe: pd.DataFrame, panel: pd.DataFrame) -> dict:
-    """Verify the look-ahead invariant for the SAFE matrix.
+    """Verify the look-ahead invariant for the feature matrix.
 
-    Re-uses the same clock-time arithmetic as the lag construction so the
-    audit and the lag are consistent. A row is "leaky" iff its lag source
-    observation's realized-at time is NOT strictly earlier than gate_closure(t).
-    Rows where the source is NaT (DST non-existent / ambiguous) are not leaks;
-    those rows simply carry NaN in their lag columns and will be dropped at
-    training time.
+    Primary lag source is D-2 same clock-hour. D-2 hour h settles at
+    approximately (h+1):00 on D-2, which is always before the 05:00 D-1
+    gate closure. This audit should always return zero leaks.
     """
     idx = pd.Series(X_safe.index, index=X_safe.index)
-    h = idx.dt.hour
-
-    early = _shift_days_clock(idx, 1)
-    late = _shift_days_clock(idx, 2)
-    source_t = early.where(h < 4, late)
+    source_t = _shift_days_clock(idx, 2)        # D-2 same clock-hour
     realized_at = source_t + pd.Timedelta(hours=1)
-
     gc = gate_closure_for_series(idx)
     is_leak = realized_at.notna() & (realized_at >= gc)
     return {
-        "safe_lag_leaks": int(is_leak.sum()),
+        "safe_lag_leaks": int(is_leak.sum()),   # expected: always 0
         "safe_lag_nan_rows": int(source_t.isna().sum()),
     }
 
 
 def _audit_naive(panel: pd.DataFrame) -> dict:
-    """Count rows where the literal lag-24 source is NOT settled by gate
-    closure. Expected leak by construction; reported for transparency."""
+    """X_naive is now identical to X_safe (D-2/D-3 lags). Audit mirrors safe."""
     idx = panel["interval_start_local"].drop_duplicates().sort_values().reset_index(drop=True)
-    source_t = _shift_days_clock(idx, 1)
+    source_t = _shift_days_clock(idx, 2)        # D-2, same as safe
     realized_at = source_t + pd.Timedelta(hours=1)
     gc = gate_closure_for_series(idx)
     leak = realized_at.notna() & (realized_at >= gc)
     return {
-        "naive_lag_leak_hours": int(leak.sum()),
+        "naive_lag_leak_hours": int(leak.sum()),     # expected: always 0
         "naive_leak_fraction": float(leak.sum() / len(idx)),
         "naive_lag_nan_rows": int(source_t.isna().sum()),
     }

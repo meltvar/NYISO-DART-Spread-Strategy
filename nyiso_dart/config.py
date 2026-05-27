@@ -173,8 +173,8 @@ def gate_closure_for_series(interval_start_local: pd.Series) -> pd.Series:
 # ---------------------------------------------------------------------------
 # Feature lag horizons
 # ---------------------------------------------------------------------------
-DART_LAG_HOURS: tuple[int, ...] = (24, 48)
-LOAD_FORECAST_ERROR_LAG_HOURS: tuple[int, ...] = (24,)
+DART_LAG_HOURS: tuple[int, ...] = (48, 72)
+LOAD_FORECAST_ERROR_LAG_HOURS: tuple[int, ...] = (48,)
 
 
 # ---------------------------------------------------------------------------

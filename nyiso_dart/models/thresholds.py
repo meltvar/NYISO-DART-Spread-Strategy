@@ -53,6 +53,8 @@ log = logging.getLogger(__name__)
 VARIANTS = ("safe", "naive")
 SIDES = ("pos", "neg")
 
+TC_PER_MWH = 1.0  # $/MWh round-trip NYISO virtual bidding admin charge
+
 
 def _load(variant: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series]:
     """Return (predictions, dart_wide, val_mask_series)."""
@@ -82,9 +84,9 @@ def _pnl_for_tau(
     if n == 0:
         return 0.0, 0, 0.0
     if side == "pos":
-        payoff = dart[trade]
+        payoff = dart[trade] - TC_PER_MWH
     else:  # neg
-        payoff = -dart[trade]
+        payoff = -dart[trade] - TC_PER_MWH
     total = float(payoff.sum())
     avg = float(payoff.mean())
     return total, n, avg

@@ -69,6 +69,7 @@ log = logging.getLogger(__name__)
 
 VARIANTS = ("safe", "naive")
 SIDES = ("pos", "neg")
+TC_PER_MWH = 1.0  # $/MWh round-trip NYISO virtual bidding admin charge
 
 
 def _load(variant: str):
@@ -101,13 +102,14 @@ def _collect_trades(
         if not trigger.any():
             continue
         idx = preds.index[trigger]
-        payoff = d.loc[idx] if side == "pos" else -d.loc[idx]
+        payoff = (d.loc[idx] if side == "pos" else -d.loc[idx]) - TC_PER_MWH
         rows.append(
             pd.DataFrame({
                 "interval_start_local": idx,
                 "zone": zone,
                 "side": side,
                 "proba": p.loc[idx].values,
+                "tau":   tau,
                 "dart": d.loc[idx].values,
                 "payoff": payoff.values,
             })
@@ -118,6 +120,29 @@ def _collect_trades(
             columns=["interval_start_local", "zone", "side", "proba", "dart", "payoff"]
         )
     trades = pd.concat(rows, ignore_index=True)
+
+    # ── Resolve directional conflicts ────────────────────────────────────
+    # The 22 logistic classifiers are independent binary models. Nothing
+    # in their training forces P(pos)+P(neg) <= 1, so it is possible for
+    # both sides to fire for the same (timestamp, zone). DART cannot be
+    # simultaneously >= +$5 and <= -$30, so trading both is logically
+    # incoherent — we keep only the side with the larger margin above its
+    # threshold (proba - tau) and drop the other.
+    trades["margin"] = trades["proba"] - trades["tau"]
+    n_before = len(trades)
+    # rank descending by margin within (timestamp, zone); keep rank 0
+    trades = (
+        trades.sort_values(["interval_start_local", "zone", "margin"],
+                           ascending=[True, True, False])
+        .drop_duplicates(subset=["interval_start_local", "zone"], keep="first")
+        .reset_index(drop=True)
+    )
+    n_dropped = n_before - len(trades)
+    if n_dropped > 0:
+        log.info("conflict resolution: dropped %d trades (%d (ts,zone) pairs had both pos & neg fire)",
+                 n_dropped, n_dropped)
+    trades = trades.drop(columns=["margin", "tau"])
+
     trades["year"] = trades["interval_start_local"].dt.year
     trades["month"] = trades["interval_start_local"].dt.month
     trades["season"] = trades["month"].map(season_of)
@@ -181,6 +206,43 @@ def _cumulative(trades: pd.DataFrame, all_test_idx: pd.DatetimeIndex) -> pd.Data
     return cum.cumsum()
 
 
+def _compute_stats(trades: pd.DataFrame, test_idx: pd.DatetimeIndex) -> dict:
+    """Sharpe, win rate, drawdown, profit factor from trade-level payoffs."""
+    if trades.empty:
+        return {}
+
+    # Daily P&L — every calendar day in the test window, zero on no-trade days
+    daily = (
+        trades.groupby(trades["interval_start_local"].dt.normalize())["payoff"]
+        .sum()
+        .reindex(test_idx.normalize().unique(), fill_value=0.0)
+    )
+    mean_d = daily.mean()
+    std_d  = daily.std(ddof=1)
+    # NYISO operates 365 days/year — calendar-day annualization is the right
+    # convention here, not the 252 used for equities.
+    sharpe = float(mean_d / std_d * np.sqrt(365)) if std_d > 0 else 0.0
+
+    wins   = trades.loc[trades["payoff"] > 0, "payoff"]
+    losses = trades.loc[trades["payoff"] < 0, "payoff"]
+    profit_factor = (
+        float(wins.sum() / abs(losses.sum())) if len(losses) > 0 else float("inf")
+    )
+
+    cum = daily.cumsum()
+    max_dd = float((cum.cummax() - cum).max())
+
+    return {
+        "sharpe_annualized": round(sharpe, 3),
+        "win_rate":          round(float((trades["payoff"] > 0).mean()), 4),
+        "profit_factor":     round(profit_factor, 3),
+        "max_drawdown":      round(-max_dd, 2),
+        "avg_win":           round(float(wins.mean()), 2) if len(wins) else 0.0,
+        "avg_loss":          round(float(losses.mean()), 2) if len(losses) else 0.0,
+        "avg_pnl_per_trade": round(float(trades["payoff"].mean()), 3),
+    }
+
+
 def run_variant(variant: str) -> dict:
     preds, dart_wide, thresholds = _load(variant)
     if not preds.index.equals(dart_wide.index):
@@ -209,8 +271,10 @@ def run_variant(variant: str) -> dict:
     pos_pnl = float(trades.loc[trades["side"] == "pos", "payoff"].sum()) if not trades.empty else 0.0
     neg_pnl = float(trades.loc[trades["side"] == "neg", "payoff"].sum()) if not trades.empty else 0.0
 
+    stats = _compute_stats(trades, preds.index[te])
     metrics = {
         "variant": variant,
+        "tc_per_mwh": TC_PER_MWH,
         "test_rows": int(te.sum()),
         "n_trades": int(len(trades)),
         "total_pnl": total_pnl,
@@ -223,17 +287,24 @@ def run_variant(variant: str) -> dict:
             trades.groupby(["zone", "side"])["payoff"].sum().reset_index().to_dict("records")
             if not trades.empty else []
         ),
+        **stats,
     }
     (out_dir / "metrics.json").write_text(json.dumps(metrics, indent=2, default=str))
     return metrics
 
 
 def _print_summary(variant: str, metrics: dict) -> None:
-    print(f"\n=== {variant} -- TEST 2022-2025 ===")
-    print(f"  trades         : {metrics['n_trades']:>10,}")
-    print(f"  total P&L      : ${metrics['total_pnl']:>14,.2f}")
-    print(f"  pos-side (DEC) : ${metrics['pos_pnl']:>14,.2f}")
-    print(f"  neg-side (INC) : ${metrics['neg_pnl']:>14,.2f}")
+    print(f"\n=== {variant} -- TEST 2022-2025  (net of ${metrics.get('tc_per_mwh', 0):.2f}/MWh TC) ===")
+    print(f"  trades             : {metrics['n_trades']:>10,}")
+    print(f"  total P&L          : ${metrics['total_pnl']:>14,.2f}")
+    print(f"  pos-side (DEC)     : ${metrics['pos_pnl']:>14,.2f}")
+    print(f"  neg-side (INC)     : ${metrics['neg_pnl']:>14,.2f}")
+    print(f"  Sharpe (ann.)      : {metrics.get('sharpe_annualized', float('nan')):>10.3f}")
+    print(f"  Win rate           : {metrics.get('win_rate', float('nan')):>10.1%}")
+    print(f"  Profit factor      : {metrics.get('profit_factor', float('nan')):>10.3f}x")
+    print(f"  Max drawdown       : ${metrics.get('max_drawdown', float('nan')):>14,.2f}")
+    print(f"  Avg win / loss     : ${metrics.get('avg_win', 0):>7,.2f} / ${metrics.get('avg_loss', 0):>7,.2f}")
+    print(f"  Avg P&L per trade  : ${metrics.get('avg_pnl_per_trade', 0):>7,.3f}")
     by_year = metrics.get("by_year", {})
     if by_year:
         print("  by year:")

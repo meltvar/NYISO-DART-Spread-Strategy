@@ -1,7 +1,17 @@
 # Data artifacts (regenerable from gridstatus)
 data/raw/
-data/processed/
-data/features/
+
+# Processed data — exclude by default; un-exclude the panel files the
+# dashboard needs so Streamlit Cloud can serve them without a data pipeline.
+data/processed/*
+!data/processed/panel.parquet
+!data/processed/panel_live_2026.parquet
+
+# Feature matrices — keep predictions_safe.parquet (needed by sandbox page)
+# and the build manifest; exclude everything else (large, regenerable).
+data/features/*
+!data/features/predictions_safe.parquet
+!data/features/manifest.json
 
 # Model checkpoints (regenerable from training)
 models/checkpoints/
